@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -28,7 +28,7 @@ public class BetterNetherMap
 {
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final String MODID = "wyrmroostpatch";
+    public static final String MODID = "betternethermap";
 
 
     public BetterNetherMap() {
@@ -44,8 +44,12 @@ public class BetterNetherMap
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        BNMItems.register(modEventBus);
+
+
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-        forgeEventBus.addListener(this::makeCaveMap);
+        forgeEventBus.addListener(this::setMapHeight);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BNMConfig.COMMON_SPEC, "betternethermap-common.toml");
 
@@ -94,8 +98,8 @@ public class BetterNetherMap
         }
     }
 
-    private void makeCaveMap(LivingEntityUseItemEvent.Finish event) {
-        BNMEvents.makeCaveMap(event);
+    private void setMapHeight(PlayerInteractEvent.RightClickItem event) {
+        BNMEvents.setMapHeight(event);
     }
 
 

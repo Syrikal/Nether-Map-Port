@@ -1,69 +1,64 @@
 package com.syric.betternethermap;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import net.minecraft.item.MapItem;
 
 public class BNMConfig {
 
     public static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec COMMON_SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Boolean> useMapCreationHeight;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> useFixedHeight;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensions;
-
-
-    public static int getDimensionScanHeight(World world, Entity entity, MapData state) {
-        if (useMapCreationHeight.get()) {
-            ServerPlayerEntity player = (ServerPlayerEntity)(entity);
-            for (int slot = 0; slot < player.inventory.items.size(); slot++) {
-                ItemStack item = player.inventory.getItem(slot);
-                if (item.getItem() instanceof FilledMapItem && FilledMapItem.getOrCreateSavedData(item, entity.level) == state) {
-                    return item.getOrCreateTag().getInt("yLevel");
-                }
-            }
-        } else {
-            for (String entry : dimensions.get()) {
-                DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
-                String id = String.valueOf(world.dimension().location());
-                if (dimensionEntry.dimension.equals(id)) {
-                    return dimensionEntry.scanHeight;
-                } else {
-                    BetterNetherMap.LOGGER.info("Config entry does not match current dimension. Config entry: " + dimensionEntry.dimension + ", dimension: " + id);
-                }
-            }
-        }
-        return 100;
-    }
-
+    public static final ForgeConfigSpec.ConfigValue<Boolean> allowBothTypes;
+    public static final ForgeConfigSpec.ConfigValue<Integer> minimumMapHeight;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> disableSpinningIndicator;
 
     static {
-        COMMON_BUILDER.push("Use Map Creation Height");
-        useMapCreationHeight = COMMON_BUILDER.comment("If true, uses the height a map was created at rather than a fixed height. Default: false").define("Use Creation Height", false);
+        COMMON_BUILDER.push("Use Fixed Heights");
+        useFixedHeight = COMMON_BUILDER.comment("If true, default maps use a configurable fixed height.\nIf false, default maps use the height they were created at.\nDefault: true").define("Use Fixed Heights", true);
+        dimensions = COMMON_BUILDER.comment("Add dimensions and their fixed scan heights.\nExample: \"minecraft:the_nether,70\", \"undergarden:the_undergarden,60\"")
+                .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,70"), (s) -> DimensionEntry.validate((String) s));
+//                .defineListAllowEmpty("dimensions", Arrays.asList(new DimensionEntry("minecraft:nether", 40)));
         COMMON_BUILDER.pop();
 
-        COMMON_BUILDER.push("Dimension List");
-        dimensions = COMMON_BUILDER.comment("Add dimensions and their scan heights.")
-                .comment("Example: \"minecraft:the_nether,40\", \"undergarden:the_undergarden,60\"")
-                .defineListAllowEmpty(Arrays.asList("dimension list"), () -> Arrays.asList("minecraft:the_nether,40"), (s) -> DimensionEntry.validate((String) s));
+        COMMON_BUILDER.push("Allow Both Types");
+        allowBothTypes = COMMON_BUILDER.comment("If true, will add variable-height maps to the game, craftable with a normal map and lapis.\n" +
+                "These maps use the height they are created at.\n" +
+                "If false, the maps will still be craftable, but will not work. Default: false").define("Add Both Types", false);
+        COMMON_BUILDER.pop();
 
+        COMMON_BUILDER.push("Minimum Variable-Height Altitude");
+        minimumMapHeight = COMMON_BUILDER.comment("Minimum height at which a variable-height map will scan. Setting this to at least 22 minimizes Ancient Debris cheese. Set to 0 to disable. Default: 22").defineInRange("Minimum Height", 22, 0, 256);
+        COMMON_BUILDER.pop();
 
-//                .defineListAllowEmpty("dimensions", Arrays.asList(new DimensionEntry("minecraft:nether", 40)));
+        COMMON_BUILDER.push("Disable Spinning Indicator");
+        disableSpinningIndicator = COMMON_BUILDER.comment("If true, the location indicator on Nether maps will be accurate rather than spinning. Default: true").define("Disable Spin", true);
         COMMON_BUILDER.pop();
 
         COMMON_SPEC = COMMON_BUILDER.build();
     }
 
+
+
+    //When given a dimension, returns the fixed height assigned to that dimension.
+    public static int getFixedHeight(World world) {
+        for (String entry : dimensions.get()) {
+            DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
+            String id = String.valueOf(world.dimension().location());
+            if (dimensionEntry.dimension.equals(id)) {
+                return dimensionEntry.scanHeight;
+            }
+        }
+        return 256;
+    }
+
 }
+
+
 
 class DimensionEntry {
 
