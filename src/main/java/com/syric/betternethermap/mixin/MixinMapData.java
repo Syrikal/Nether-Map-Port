@@ -1,6 +1,6 @@
 package com.syric.betternethermap.mixin;
 
-import com.syric.betternethermap.BNMConfig;
+import com.syric.betternethermap.config.BNMConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryKey;
@@ -25,6 +25,7 @@ public class MixinMapData {
     @Shadow public RegistryKey<World> dimension;
 
     @Redirect(method = "addDecoration", at = @At(value = "FIELD", target = "Lnet/minecraft/world/storage/MapData;dimension:Lnet/minecraft/util/RegistryKey;"))
+    //Disables the spinning indicator in the Nether.
     public RegistryKey<World> addDecoration(MapData instance) {
 
         if (BNMConfig.disableSpinningIndicator.get()) {
@@ -35,6 +36,7 @@ public class MixinMapData {
     }
 
     @Inject(method= "tickCarriedBy", at = @At(value = "TAIL"))
+    //Removes player location icon when in a different dimension.
     public void removeOtherDimensions(PlayerEntity player, ItemStack stack, CallbackInfo ci) {
         if (player.level.dimension() != this.dimension) {
             this.decorations.remove(player.getName().getString());

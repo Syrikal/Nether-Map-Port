@@ -1,5 +1,7 @@
 package com.syric.betternethermap;
 
+import com.syric.betternethermap.config.BNMConfig;
+import com.syric.betternethermap.items.BNMItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;

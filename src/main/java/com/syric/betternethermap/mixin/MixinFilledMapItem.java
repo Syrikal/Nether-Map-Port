@@ -1,6 +1,5 @@
 package com.syric.betternethermap.mixin;
 
-import com.syric.betternethermap.BetterNetherMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -49,7 +48,7 @@ public class MixinFilledMapItem {
                 //If the map is found, return its yLevel value!
                 if (item.getItem() instanceof FilledMapItem && Objects.equals(FilledMapItem.getOrCreateSavedData(item, entity.level), data)) {
                     //This might damage preexisting maps! Probably only of the nether though.
-                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
+//                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
                     return item.getOrCreateTag().getInt("yLevel");
                 }
             }
@@ -57,7 +56,7 @@ public class MixinFilledMapItem {
             ItemStack offhandItem = player.getOffhandItem();
             if (offhandItem.getItem() instanceof FilledMapItem && Objects.equals(FilledMapItem.getOrCreateSavedData(offhandItem, entity.level), data)) {
                 //This might damage preexisting maps! Probably only of the nether though.
-                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
+//                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
                 return offhandItem.getOrCreateTag().getInt("yLevel");
             }
             //If no map is found for some reason, return 256.

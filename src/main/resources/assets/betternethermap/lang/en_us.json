@@ -1,4 +1,6 @@
 {
-  "betternethermap.failmessage": "Variable-Height Maps are disabled.",
-  "item.betternethermap.variableheightmap": "Variable-Height Map"
+  "betternethermap.failmessage": "This map type is disabled.",
+  "item.betternethermap.fixedmap": "Fixed-Height Map",
+  "item.betternethermap.snapmap": "Snap-Height Map",
+  "item.betternethermap.variablemap": "Variable-Height Map"
 }

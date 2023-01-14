@@ -1,5 +1,7 @@
-package com.syric.betternethermap;
+package com.syric.betternethermap.items;
 
+import com.syric.betternethermap.config.BNMConfig;
+import com.syric.betternethermap.config.MapBehaviorType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
@@ -12,14 +14,18 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class VariableHeightMapItem extends MapItem {
-    public VariableHeightMapItem(Properties properties) {
+public class AlternateMapItem extends MapItem {
+
+    public final MapBehaviorType type;
+
+    public AlternateMapItem(Properties properties, MapBehaviorType type) {
         super(properties);
+        this.type = type;
     }
 
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (BNMConfig.allowBothTypes.get()) {
+        if (enabled()) {
             ItemStack itemstack = FilledMapItem.create(world, MathHelper.floor(player.getX()), MathHelper.floor(player.getZ()), (byte)0, true, false);
             ItemStack itemstack1 = player.getItemInHand(hand);
             if (!player.abilities.instabuild) {
@@ -42,6 +48,16 @@ public class VariableHeightMapItem extends MapItem {
                 player.displayClientMessage(new TranslationTextComponent("betternethermap.failmessage"), false);
             }
             return ActionResult.fail(player.getItemInHand(hand));
+        }
+    }
+
+    private boolean enabled() {
+        if (type == MapBehaviorType.FIXED) {
+            return BNMConfig.addFixedMaps.get();
+        } else if (type == MapBehaviorType.SNAP) {
+            return BNMConfig.addSnapMaps.get();
+        } else {
+            return BNMConfig.addVariableMaps.get();
         }
     }
 

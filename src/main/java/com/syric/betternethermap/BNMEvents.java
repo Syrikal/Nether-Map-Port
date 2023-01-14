@@ -1,5 +1,8 @@
 package com.syric.betternethermap;
 
+import com.syric.betternethermap.config.BNMConfig;
+import com.syric.betternethermap.config.MapBehaviorType;
+import com.syric.betternethermap.items.AlternateMapItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
@@ -8,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -28,6 +32,9 @@ public class BNMEvents {
             //Add the NBT
             CompoundNBT tag = filledMapStack.getOrCreateTag();
             tag.putInt("yLevel", getNewMapHeight(used, player, world));
+            if (world.isClientSide) {
+                player.displayClientMessage(ITextComponent.nullToEmpty("Set map y-level to " + getNewMapHeight(used, player, world)), false);
+            }
             filledMapStack.setTag(tag);
 
             if (!player.abilities.instabuild) {
@@ -50,10 +57,23 @@ public class BNMEvents {
     //A new map's height is its creation value by default.
     //If useFixedHeight is enabled and the map is not a VariableHeightMap, it uses the fixed height (from the config) instead.
     private static int getNewMapHeight(ItemStack item, PlayerEntity player, World world) {
-        if (BNMConfig.useFixedHeight.get() && !(item.getItem() instanceof VariableHeightMapItem)) {
-            return BNMConfig.getFixedHeight(world);
+
+        //Decide what behavior type it is
+        MapBehaviorType category;
+
+        if (item.getItem() instanceof AlternateMapItem) {
+            AlternateMapItem alt = (AlternateMapItem) item.getItem();
+            category = alt.type;
         } else {
-            //Don't return a variable height lower than the minimum.
+            category = BNMConfig.defaultBehavior.get();
+        }
+
+        //Return the appropriate height
+        if (category.equals(MapBehaviorType.FIXED)) {
+            return BNMConfig.getFixedHeight(world);
+        } else if (category.equals(MapBehaviorType.SNAP)) {
+            return BNMConfig.getSnapHeight(world, (int) player.getY());
+        } else {
             return (int) Math.max(player.getY(), BNMConfig.minimumMapHeight.get());
         }
     }
