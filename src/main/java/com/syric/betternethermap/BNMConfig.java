@@ -42,7 +42,7 @@ public class BNMConfig {
                 }
             }
         }
-        return 200;
+        return 100;
     }
 
 
@@ -52,9 +52,9 @@ public class BNMConfig {
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.push("Dimension List");
-        dimensions = COMMON_BUILDER.comment("Add dimensions and their scan heights. Default: minecraft:nether at 40")
-                .comment("Example: \"minecraft:nether,40\", \"undergarden:the_undergarden,60\"")
-                .defineListAllowEmpty(Arrays.asList("dimension list"), () -> Arrays.asList("minecraft:nether,40"), (s) -> DimensionEntry.validate((String) s));
+        dimensions = COMMON_BUILDER.comment("Add dimensions and their scan heights.")
+                .comment("Example: \"minecraft:the_nether,40\", \"undergarden:the_undergarden,60\"")
+                .defineListAllowEmpty(Arrays.asList("dimension list"), () -> Arrays.asList("minecraft:the_nether,40"), (s) -> DimensionEntry.validate((String) s));
 
 
 //                .defineListAllowEmpty("dimensions", Arrays.asList(new DimensionEntry("minecraft:nether", 40)));
