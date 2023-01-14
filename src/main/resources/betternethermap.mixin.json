@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.syric.betternethermap.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinFilledMapItem"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "betternethermap.mixin-refmap.json"
+}

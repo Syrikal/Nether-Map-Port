@@ -14,12 +14,15 @@ public class BNMEvents {
     public static void makeCaveMap(LivingEntityUseItemEvent.Finish event) {
         World world = event.getEntity().level;
         ItemStack used = event.getItem();
-        if (used.getItem() instanceof MapItem && event.getEntity() instanceof PlayerEntity player) {
+        if (used.getItem() instanceof MapItem && event.getEntity() instanceof PlayerEntity) {
             if(!world.isClientSide) {
+                PlayerEntity player = (PlayerEntity) event.getEntity();
                 ItemStack filledMap = FilledMapItem.create(world, MathHelper.floor(player.getX()), MathHelper.floor(player.getZ()), (byte)0, true, false);
                 CompoundNBT tag = filledMap.getOrCreateTag();
                 tag.putInt("yLevel", (int) player.getY());
                 filledMap.setTag(tag);
+            } else {
+                event.setCanceled(true);
             }
         }
     }
