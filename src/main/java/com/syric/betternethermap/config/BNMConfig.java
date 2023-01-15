@@ -70,7 +70,7 @@ public class BNMConfig {
                         "\nIt is recommended to set this to at least 22 in the Nether to avoid Ancient Debris cheese." +
                         "\nExample: [\"minecraft:the_nether,22\"]")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,22"), (s) -> DimensionEntry.validateFixed((String) s));
-        variableModifier = COMMON_BUILDER.comment("Modifier to place on variable-height maps' y-value. 0 produces a map at your feet's y-value, 2 at your head. Default: 2").defineInRange("Variable Height Modifier", 2, -10, 10);
+        variableModifier = COMMON_BUILDER.comment("Modifier to place on variable-height maps' y-value. 0 produces a map at your feet's y-value, 2 at your head. Default: 2").defineInRange("Variable Height Modifier", 2, -100, 100);
         COMMON_BUILDER.pop();
 
 
@@ -96,7 +96,7 @@ public class BNMConfig {
                 return dimensionEntry.heights.get(0);
             }
         }
-        return 256;
+        return -1;
     }
     public static int getSnapHeight(World world, int y) {
         for (String entry : dimensionsSnap.get()) {
@@ -106,7 +106,7 @@ public class BNMConfig {
                 return dimensionEntry.getClosestValue(y);
             }
         }
-        return 256;
+        return -1;
     }
     public static int getMinHeight(World world) {
         for (String entry : dimensionMinima.get()) {

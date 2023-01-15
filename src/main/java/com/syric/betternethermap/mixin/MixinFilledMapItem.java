@@ -39,9 +39,9 @@ public class MixinFilledMapItem {
      * Otherwise, checks the player's inventory for the map item and reads its stored yLevel.
      */
     public int getHeight(Chunk chunk, Heightmap.Type type, int x, int z, World world, Entity entity, MapData data) {
-        if (!world.dimensionType().hasCeiling()) {
-            return chunk.getHeight(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
-        } else {
+        int candidateLevel = -1;
+
+        if (world.dimensionType().hasCeiling()) {
             ServerPlayerEntity player = (ServerPlayerEntity) (entity);
             for (int slot = 0; slot < player.inventory.items.size(); slot++) {
                 ItemStack item = player.inventory.getItem(slot);
@@ -49,7 +49,7 @@ public class MixinFilledMapItem {
                 if (item.getItem() instanceof FilledMapItem && Objects.equals(FilledMapItem.getOrCreateSavedData(item, entity.level), data)) {
                     //This might damage preexisting maps! Probably only of the nether though.
 //                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
-                    return item.getOrCreateTag().getInt("yLevel");
+                    candidateLevel = item.getOrCreateTag().getInt("yLevel");
                 }
             }
             //Also check the offhand!
@@ -57,10 +57,15 @@ public class MixinFilledMapItem {
             if (offhandItem.getItem() instanceof FilledMapItem && Objects.equals(FilledMapItem.getOrCreateSavedData(offhandItem, entity.level), data)) {
                 //This might damage preexisting maps! Probably only of the nether though.
 //                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
-                return offhandItem.getOrCreateTag().getInt("yLevel");
+                candidateLevel = offhandItem.getOrCreateTag().getInt("yLevel");
             }
             //If no map is found for some reason, return 256.
-            return 256;
+        }
+
+        if (candidateLevel != -1) {
+            return candidateLevel;
+        } else {
+            return chunk.getHeight(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
         }
     }
 
