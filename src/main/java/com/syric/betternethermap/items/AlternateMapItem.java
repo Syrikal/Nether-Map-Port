@@ -3,19 +3,9 @@ package com.syric.betternethermap.items;
 import com.syric.betternethermap.BetterNetherMap;
 import com.syric.betternethermap.config.BNMConfig;
 import com.syric.betternethermap.config.MapBehaviorType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.MapItem;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.EmptyMapItem;
 
-public class AlternateMapItem extends MapItem {
+public class AlternateMapItem extends EmptyMapItem {
 
     public final MapBehaviorType type;
 

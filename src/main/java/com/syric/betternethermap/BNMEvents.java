@@ -3,17 +3,17 @@ package com.syric.betternethermap;
 import com.syric.betternethermap.config.BNMConfig;
 import com.syric.betternethermap.config.MapBehaviorType;
 import com.syric.betternethermap.items.AlternateMapItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.MapItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.EmptyMapItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -21,35 +21,35 @@ public class BNMEvents {
 
     //When a new map is created, add a y-level to its NBT data.
     public static void setMapHeight(PlayerInteractEvent.RightClickItem event) {
-        World world = event.getEntity().level;
+        Level world = event.getEntity().level;
         ItemStack used = event.getItemStack();
-        if (used.getItem() instanceof MapItem && event.getEntity() instanceof PlayerEntity) {
+        if (used.getItem() instanceof EmptyMapItem && event.getEntity() instanceof Player player) {
             event.setCanceled(true);
-            PlayerEntity player = (PlayerEntity) event.getEntity();
+//            Player player = (PlayerEntity) event.getEntity();
 
-            if (used.getItem() instanceof AlternateMapItem) {
-                AlternateMapItem alt = (AlternateMapItem) used.getItem();
+            if (used.getItem() instanceof AlternateMapItem alt) {
+//                AlternateMapItem alt = (AlternateMapItem) used.getItem();
                 if (!alt.enabled()) {
                     if (world.isClientSide) {
-                        player.displayClientMessage(new TranslationTextComponent("betternethermap.failmessage"), false);
+                        player.displayClientMessage(new TranslatableComponent("betternethermap.failmessage"), false);
                     }
                     event.setResult(Event.Result.DENY);
                     return;
                 }
             }
 
-            ItemStack filledMapStack = FilledMapItem.create(world, MathHelper.floor(player.getX()), MathHelper.floor(player.getZ()), (byte)0, true, false);
+            ItemStack filledMapStack = MapItem.create(world, Mth.floor(player.getX()), Mth.floor(player.getZ()), (byte)0, true, false);
             ItemStack emptyMapStack = player.getItemInHand(event.getHand());
 
             //Add the NBT
-            CompoundNBT tag = filledMapStack.getOrCreateTag();
+            CompoundTag tag = filledMapStack.getOrCreateTag();
             tag.putInt("yLevel", getNewMapHeight(used, player, world));
             if (world.isClientSide && BNMConfig.debugMessages.get()) {
-                player.displayClientMessage(ITextComponent.nullToEmpty("Set map y-level to " + getNewMapHeight(used, player, world)), false);
+                player.displayClientMessage(Component.nullToEmpty("Set map y-level to " + getNewMapHeight(used, player, world)), false);
             }
             filledMapStack.setTag(tag);
 
-            if (!player.abilities.instabuild) {
+            if (!player.isCreative()) {
                 emptyMapStack.shrink(1);
             }
 
@@ -58,7 +58,7 @@ public class BNMEvents {
             if (emptyMapStack.isEmpty()) {
                 event.setResult(Event.Result.DEFAULT);
             } else {
-                if (!player.inventory.add(filledMapStack.copy())) {
+                if (!player.getInventory().add(filledMapStack.copy())) {
                     player.drop(filledMapStack, false);
                 }
                 event.setResult(Event.Result.DEFAULT);
@@ -68,13 +68,12 @@ public class BNMEvents {
 
     //A new map's height is its creation value by default.
     //If useFixedHeight is enabled and the map is not a VariableHeightMap, it uses the fixed height (from the config) instead.
-    private static int getNewMapHeight(ItemStack item, PlayerEntity player, World world) {
+    private static int getNewMapHeight(ItemStack item, Player player, Level world) {
 
         //Decide what behavior type it is
         MapBehaviorType category;
 
-        if (item.getItem() instanceof AlternateMapItem) {
-            AlternateMapItem alt = (AlternateMapItem) item.getItem();
+        if (item.getItem() instanceof AlternateMapItem alt) {
             category = alt.type;
         } else {
             category = BNMConfig.defaultBehavior.get();

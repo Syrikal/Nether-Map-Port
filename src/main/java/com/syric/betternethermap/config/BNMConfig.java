@@ -1,6 +1,6 @@
 package com.syric.betternethermap.config;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
@@ -28,47 +28,54 @@ public class BNMConfig {
 
     static {
         COMMON_BUILDER.push("Default Map Behavior");
-        defaultBehavior = COMMON_BUILDER.comment("Decides what behavior vanilla maps follow in cave dimensions." +
-                "\nFIXED: map scans at a fixed configurable y-value" +
-                "\nSNAP: map scans at the nearest of several configurable y-values" +
-                "\nVARIABLE: map scans at the y-value it was created at" +
-                "\nDefault: FIXED")
+        defaultBehavior = COMMON_BUILDER.comment("""
+                        Decides what behavior vanilla maps follow in cave dimensions.
+                        FIXED: map scans at a fixed configurable y-value
+                        SNAP: map scans at the nearest of several configurable y-values
+                        VARIABLE: map scans at the y-value it was created at
+                        Default: FIXED""")
                         .defineEnum("Default Behavior", MapBehaviorType.FIXED);
         COMMON_BUILDER.pop();
 
 
         COMMON_BUILDER.push("Fixed-Height Map Settings");
-        addFixedMaps = COMMON_BUILDER.comment("If true, will add fixed-height maps to the game, craftable with a normal map and an iron nugget.\n" +
-                "These maps always use the configurable fixed heights.\n" +
-                "If false, the maps will still be craftable, but will not work. Default: false").define("Enable Fixed Maps", false);
-        dimensionsFixed = COMMON_BUILDER.comment("Add dimensions' fixed scan heights." +
-                        "\nNote that in the Nether, values under 22 allow for Ancient Debris cheese." +
-                        "\nExample: [\"minecraft:the_nether,70\",\"undergarden:undergarden,120\"]")
+        addFixedMaps = COMMON_BUILDER.comment("""
+                If true, will add fixed-height maps to the game, craftable with a normal map and an iron nugget.
+                These maps always use the configurable fixed heights.
+                If false, the maps will still be craftable, but will not work. Default: false""").define("Enable Fixed Maps", false);
+        dimensionsFixed = COMMON_BUILDER.comment("""
+                        Add dimensions' fixed scan heights.
+                        Note that in the Nether, values under 22 allow for Ancient Debris cheese.
+                        Example: ["minecraft:the_nether,70","undergarden:undergarden,120"]""")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,70"), (s) -> DimensionEntry.validateFixed((String) s));
         COMMON_BUILDER.pop();
 
 
         COMMON_BUILDER.push("Snap-Height Map Settings");
-        addSnapMaps = COMMON_BUILDER.comment("If true, will add snap-height maps to the game, craftable with a normal map and redstone.\n" +
-                "These maps always use the configurable snap heights.\n" +
-                "If false, the maps will still be craftable, but will not work. Default: false").define("Enable Snap Maps", false);
-        dimensionsSnap = COMMON_BUILDER.comment("Add dimensions' snap scan heights." +
-                        "\nYou can specify multiple heights per dimension." +
-                        "\nThis is good for mapping a dimension in multiple fixed layers." +
-                        "\nNote that in the Nether, values under 22 allow for Ancient Debris cheese." +
-                        "\nExample: [\"minecraft:the_nether,40,70,100\",\"undergarden:undergarden,60,120,180\"]")
+        addSnapMaps = COMMON_BUILDER.comment("""
+                If true, will add snap-height maps to the game, craftable with a normal map and redstone.
+                These maps always use the configurable snap heights.
+                If false, the maps will still be craftable, but will not work. Default: false""").define("Enable Snap Maps", false);
+        dimensionsSnap = COMMON_BUILDER.comment("""
+                        Add dimensions' snap scan heights.
+                        You can specify multiple heights per dimension.
+                        This is good for mapping a dimension in multiple fixed layers.
+                        Note that in the Nether, values under 22 allow for Ancient Debris cheese.
+                        Example: ["minecraft:the_nether,40,70,100","undergarden:undergarden,60,120,180"]""")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,40,70,100"), (s) -> DimensionEntry.validateSnap((String) s));
 
         COMMON_BUILDER.pop();
 
 
         COMMON_BUILDER.push("Variable-Height Map Settings");
-        addVariableMaps = COMMON_BUILDER.comment("If true, will add variable-height maps to the game, craftable with a normal map and lapis.\n" +
-                "These maps always use the height they are created at.\n" +
-                "If false, the maps will still be craftable, but will not work. Default: false").define("Enable Variable Maps", false);
-        dimensionMinima = COMMON_BUILDER.comment("Add minimum allowed y-values for variable-height maps." +
-                        "\nIt is recommended to set this to at least 22 in the Nether to avoid Ancient Debris cheese." +
-                        "\nExample: [\"minecraft:the_nether,22\"]")
+        addVariableMaps = COMMON_BUILDER.comment("""
+                If true, will add variable-height maps to the game, craftable with a normal map and lapis.
+                These maps always use the height they are created at.
+                If false, the maps will still be craftable, but will not work. Default: false""").define("Enable Variable Maps", false);
+        dimensionMinima = COMMON_BUILDER.comment("""
+                        Add minimum allowed y-values for variable-height maps.
+                        It is recommended to set this to at least 22 in the Nether to avoid Ancient Debris cheese.
+                        Example: ["minecraft:the_nether,22"]""")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,22"), (s) -> DimensionEntry.validateFixed((String) s));
         variableModifier = COMMON_BUILDER.comment("Modifier to place on variable-height maps' y-value. 0 produces a map at your feet's y-value, 2 at your head. Default: 2").defineInRange("Variable Height Modifier", 2, -10, 10);
         COMMON_BUILDER.pop();
@@ -87,7 +94,7 @@ public class BNMConfig {
 
 
     //When given a dimension, returns the fixed height assigned to that dimension.
-    public static int getFixedHeight(World world) {
+    public static int getFixedHeight(Level world) {
         for (String entry : dimensionsFixed.get()) {
             DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
             String id = String.valueOf(world.dimension().location());
@@ -97,7 +104,7 @@ public class BNMConfig {
         }
         return 256;
     }
-    public static int getSnapHeight(World world, int y) {
+    public static int getSnapHeight(Level world, int y) {
         for (String entry : dimensionsSnap.get()) {
             DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
             String id = String.valueOf(world.dimension().location());
@@ -107,7 +114,7 @@ public class BNMConfig {
         }
         return 256;
     }
-    public static int getMinHeight(World world) {
+    public static int getMinHeight(Level world) {
         for (String entry : dimensionMinima.get()) {
             DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
             String id = String.valueOf(world.dimension().location());

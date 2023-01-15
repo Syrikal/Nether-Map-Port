@@ -2,12 +2,12 @@ package com.syric.betternethermap.items;
 
 import com.syric.betternethermap.BetterNetherMap;
 import com.syric.betternethermap.config.MapBehaviorType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BNMItems {
     // create DeferredRegister object
@@ -20,11 +20,11 @@ public class BNMItems {
 
     // register items
     public static final RegistryObject<Item> FIXED_HEIGHT_MAP = ITEMS.register("fixedmap",
-            () -> new AlternateMapItem(new Item.Properties().tab(ItemGroup.TAB_MISC), MapBehaviorType.FIXED));
+            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.FIXED));
     public static final RegistryObject<Item> SNAP_HEIGHT_MAP = ITEMS.register("snapmap",
-            () -> new AlternateMapItem(new Item.Properties().tab(ItemGroup.TAB_MISC), MapBehaviorType.SNAP));
+            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.SNAP));
     public static final RegistryObject<Item> VARIABLE_HEIGHT_MAP = ITEMS.register("variablemap",
-            () -> new AlternateMapItem(new Item.Properties().tab(ItemGroup.TAB_MISC), MapBehaviorType.VARIABLE));
+            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.VARIABLE));
 
 
 }
