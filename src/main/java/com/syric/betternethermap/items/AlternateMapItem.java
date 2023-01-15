@@ -1,6 +1,5 @@
 package com.syric.betternethermap.items;
 
-import com.syric.betternethermap.BetterNetherMap;
 import com.syric.betternethermap.config.BNMConfig;
 import com.syric.betternethermap.config.MapBehaviorType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,13 +53,13 @@ public class AlternateMapItem extends MapItem {
 
     public boolean enabled() {
         if (this.type == MapBehaviorType.FIXED) {
-            BetterNetherMap.LOGGER.info("Detected a fixed map, enabled: " + BNMConfig.addFixedMaps.get());
+//            BetterNetherMap.LOGGER.info("Detected a fixed map, enabled: " + BNMConfig.addFixedMaps.get());
             return BNMConfig.addFixedMaps.get();
         } else if (this.type == MapBehaviorType.SNAP) {
-            BetterNetherMap.LOGGER.info("Detected a snap map, enabled: " + BNMConfig.addSnapMaps.get());
+//            BetterNetherMap.LOGGER.info("Detected a snap map, enabled: " + BNMConfig.addSnapMaps.get());
             return BNMConfig.addSnapMaps.get();
         } else {
-            BetterNetherMap.LOGGER.info("Detected a variable map, enabled: " + BNMConfig.addVariableMaps.get());
+//            BetterNetherMap.LOGGER.info("Detected a variable map, enabled: " + BNMConfig.addVariableMaps.get());
             return BNMConfig.addVariableMaps.get();
         }
     }

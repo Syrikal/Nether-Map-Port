@@ -23,6 +23,8 @@ public class BNMConfig {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionMinima;
     public static final ForgeConfigSpec.ConfigValue<Integer> variableModifier;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> enableOverworldMapping;
+
     public static final ForgeConfigSpec.ConfigValue<Boolean> disableSpinningIndicator;
     public static final ForgeConfigSpec.ConfigValue<Boolean> debugMessages;
 
@@ -58,7 +60,6 @@ public class BNMConfig {
                         "\nNote that in the Nether, values under 22 allow for Ancient Debris cheese." +
                         "\nExample: [\"minecraft:the_nether,40,70,100\",\"undergarden:undergarden,60,120,180\"]")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,40,70,100"), (s) -> DimensionEntry.validateSnap((String) s));
-
         COMMON_BUILDER.pop();
 
 
@@ -71,6 +72,13 @@ public class BNMConfig {
                         "\nExample: [\"minecraft:the_nether,22\"]")
                 .defineListAllowEmpty(Collections.singletonList("dimension list"), () -> Collections.singletonList("minecraft:the_nether,22"), (s) -> DimensionEntry.validateFixed((String) s));
         variableModifier = COMMON_BUILDER.comment("Modifier to place on variable-height maps' y-value. 0 produces a map at your feet's y-value, 2 at your head. Default: 2").defineInRange("Variable Height Modifier", 2, -100, 100);
+        COMMON_BUILDER.pop();
+
+
+        COMMON_BUILDER.push("Enable Overworld Cave Mapping");
+        enableOverworldMapping = COMMON_BUILDER.comment("If true, the alternate map types will use their cave functionality in the Overworld and other non-cave dimensions. Vanilla maps will still use vanilla behavior.\n" +
+                "This therefore requires alternate maps to be enabled.\n" +
+                "This requires entering the overworld into the above config settings, e.g. \"minecraft:overworld,-30,0,30\".").define("Enable Overworld Maps", false);
         COMMON_BUILDER.pop();
 
 
@@ -96,7 +104,7 @@ public class BNMConfig {
                 return dimensionEntry.heights.get(0);
             }
         }
-        return -1;
+        return -1000;
     }
     public static int getSnapHeight(World world, int y) {
         for (String entry : dimensionsSnap.get()) {
@@ -106,17 +114,18 @@ public class BNMConfig {
                 return dimensionEntry.getClosestValue(y);
             }
         }
-        return -1;
+        return -1000;
     }
     public static int getMinHeight(World world) {
+        int candidate = -64;
         for (String entry : dimensionMinima.get()) {
             DimensionEntry dimensionEntry = DimensionEntry.deserialize(entry);
             String id = String.valueOf(world.dimension().location());
             if (dimensionEntry.dimension.equals(id)) {
-                return dimensionEntry.heights.get(0);
+                candidate = dimensionEntry.heights.get(0);
             }
         }
-        return 0;
+        return Math.max(candidate, -64);
     }
 
 

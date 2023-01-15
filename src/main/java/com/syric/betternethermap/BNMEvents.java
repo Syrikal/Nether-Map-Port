@@ -44,6 +44,9 @@ public class BNMEvents {
             //Add the NBT
             CompoundNBT tag = filledMapStack.getOrCreateTag();
             tag.putInt("yLevel", getNewMapHeight(used, player, world));
+            if (used.getItem() instanceof AlternateMapItem && BNMConfig.enableOverworldMapping.get()) {
+                tag.putBoolean("forceCave", true);
+            }
             if (world.isClientSide && BNMConfig.debugMessages.get()) {
                 player.displayClientMessage(ITextComponent.nullToEmpty("Set map y-level to " + getNewMapHeight(used, player, world)), false);
             }
