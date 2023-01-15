@@ -9,9 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MapItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -25,6 +27,17 @@ public class BNMEvents {
         if (used.getItem() instanceof MapItem && event.getEntity() instanceof PlayerEntity) {
             event.setCanceled(true);
             PlayerEntity player = (PlayerEntity) event.getEntity();
+
+            if (used.getItem() instanceof AlternateMapItem) {
+                AlternateMapItem alt = (AlternateMapItem) used.getItem();
+                if (!alt.enabled()) {
+                    if (world.isClientSide) {
+                        player.displayClientMessage(new TranslationTextComponent("betternethermap.failmessage"), false);
+                    }
+                    event.setResult(Event.Result.DENY);
+                    return;
+                }
+            }
 
             ItemStack filledMapStack = FilledMapItem.create(world, MathHelper.floor(player.getX()), MathHelper.floor(player.getZ()), (byte)0, true, false);
             ItemStack emptyMapStack = player.getItemInHand(event.getHand());
@@ -74,7 +87,7 @@ public class BNMEvents {
         } else if (category.equals(MapBehaviorType.SNAP)) {
             return BNMConfig.getSnapHeight(world, (int) player.getY());
         } else {
-            return (int) Math.max(player.getY(), BNMConfig.minimumMapHeight.get());
+            return (int) Math.max((player.getY() + (double) BNMConfig.variableModifier.get()), BNMConfig.getMinHeight(world));
         }
     }
 
