@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MapItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -45,7 +44,7 @@ public class BNMEvents {
             //Add the NBT
             CompoundNBT tag = filledMapStack.getOrCreateTag();
             tag.putInt("yLevel", getNewMapHeight(used, player, world));
-            if (world.isClientSide) {
+            if (world.isClientSide && BNMConfig.debugMessages.get()) {
                 player.displayClientMessage(ITextComponent.nullToEmpty("Set map y-level to " + getNewMapHeight(used, player, world)), false);
             }
             filledMapStack.setTag(tag);

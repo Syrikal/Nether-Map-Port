@@ -24,6 +24,7 @@ public class BNMConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> variableModifier;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> disableSpinningIndicator;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> debugMessages;
 
     static {
         COMMON_BUILDER.push("Default Map Behavior");
@@ -76,6 +77,9 @@ public class BNMConfig {
         COMMON_BUILDER.push("Disable Spinning Indicator");
         disableSpinningIndicator = COMMON_BUILDER.comment("If true, the location indicator on Nether maps will be accurate rather than spinning. Default: true").define("Disable Spin", true);
         COMMON_BUILDER.pop();
+
+        COMMON_BUILDER.push("Enable Debug Messages");
+        debugMessages = COMMON_BUILDER.comment("Displays the Y-level a map is linked to in the chat when you create it. Default: false").define("Enable Debug", false);
 
         COMMON_SPEC = COMMON_BUILDER.build();
     }
