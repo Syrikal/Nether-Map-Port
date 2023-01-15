@@ -87,8 +87,8 @@ public class BNMConfig {
         enableOverworldMapping = COMMON_BUILDER.comment("""
                 If true, the alternate map types will use their cave functionality in the Overworld and other non-cave dimensions. Vanilla maps will still use vanilla behavior.
                 This therefore requires alternate maps to be enabled.
-                This requires entering the overworld into the above config settings, e.g. "minecraft:overworld,-30,0,30".
-                """).define("Enable Overworld Maps", false);
+                This requires entering the overworld into the above config settings, e.g. "minecraft:overworld,-30,0,30".""")
+                .define("Enable Overworld Maps", false);
         COMMON_BUILDER.pop();
 
 
