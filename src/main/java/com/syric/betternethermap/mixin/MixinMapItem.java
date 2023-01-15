@@ -1,5 +1,6 @@
 package com.syric.betternethermap.mixin;
 
+import com.syric.betternethermap.config.BNMConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +40,11 @@ public class MixinMapItem {
      * Otherwise, checks the player's inventory for the map item and reads its stored yLevel.
      */
     public int getHeight(LevelChunk chunk, Heightmap.Types type, int x, int z, Level world, Entity entity, MapItemSavedData data) {
-        if (!world.dimensionType().hasCeiling()) {
-            return chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1;
-        } else {
+        boolean caveMode = false;
+        int foundLevel = -1000;
+
+        //If cave dimension, find the level. Cave mode is true.
+        if (world.dimensionType().hasCeiling()) {
             if (entity instanceof ServerPlayer player) {
                 for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
                     ItemStack item = player.getInventory().getItem(slot);
@@ -49,7 +52,8 @@ public class MixinMapItem {
                     if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level), data)) {
                         //This might damage preexisting maps! Probably only of the nether though.
 //                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
-                        return item.getOrCreateTag().getInt("yLevel");
+                        foundLevel = item.getOrCreateTag().getInt("yLevel");
+                        caveMode = true;
                     }
                 }
                 //Also check the offhand!
@@ -57,12 +61,40 @@ public class MixinMapItem {
                 if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level), data)) {
                     //This might damage preexisting maps! Probably only of the nether though.
 //                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
-                    return offhandItem.getOrCreateTag().getInt("yLevel");
+                    foundLevel = offhandItem.getOrCreateTag().getInt("yLevel");
+                    caveMode = true;
                 }
-                //If no map is found for some reason, return 256.
-                return 256;
             }
         }
-        return 256;
+        //Otherwise, check cave mode and y level.
+        else {
+            if (entity instanceof ServerPlayer player) {
+                for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
+                    ItemStack item = player.getInventory().getItem(slot);
+                    //If the map is found, return its yLevel value!
+                    if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level), data)) {
+                        //This might damage preexisting maps! Probably only of the nether though.
+//                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
+                        foundLevel = item.getOrCreateTag().getInt("yLevel");
+                        caveMode = item.getOrCreateTag().getBoolean("forceCave") && BNMConfig.enableOverworldMapping.get();
+                    }
+                }
+                //Also check the offhand!
+                ItemStack offhandItem = player.getOffhandItem();
+                if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level), data)) {
+                    //This might damage preexisting maps! Probably only of the nether though.
+//                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
+                    foundLevel = offhandItem.getOrCreateTag().getInt("yLevel");
+                    caveMode = offhandItem.getOrCreateTag().getBoolean("forceCave") && BNMConfig.enableOverworldMapping.get();
+                }
+            }
+        }
+
+        //Return the found level if it's cave mode (and the found level wasn't the default, -1000), or the chunk height if it's not.
+        if (caveMode & foundLevel != -1000) {
+            return foundLevel;
+        } else {
+            return chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1;
+        }
     }
 }

@@ -68,7 +68,7 @@ class DimensionEntry {
     public int getClosestValue(int y) {
 
         if (heights.size() == 0) {
-            return 256;
+            return -1000;
         }
 
         int closest = heights.stream().min(Comparator.comparingInt(i -> Math.abs(i-y))).orElse(256);
