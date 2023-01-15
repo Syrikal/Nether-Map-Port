@@ -80,6 +80,7 @@ public class BNMConfig {
 
         COMMON_BUILDER.push("Enable Debug Messages");
         debugMessages = COMMON_BUILDER.comment("Displays the Y-level a map is linked to in the chat when you create it. Default: false").define("Enable Debug", false);
+        COMMON_BUILDER.pop();
 
         COMMON_SPEC = COMMON_BUILDER.build();
     }
