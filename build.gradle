@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: "0.7-SNAPSHOT"
     }
 }
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
@@ -148,13 +148,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+    maven { url='https://repo.spongepowered.org/repository/maven-public/' }
     maven {
         name = "cursemaven"
         url = "https://cursemaven.com"
@@ -166,8 +160,7 @@ repositories {
 }
 
 mixin {
-    add sourceSets.main, "main.refmap.json"
-    add sourceSets.main, "undergarden.refmap.json"
+    add sourceSets.main, "betternethermap.mixin-refmap.json"
 }
 
 dependencies {
@@ -178,6 +171,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:the-undergarden-379849:3810810")
 
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 
 
@@ -210,7 +204,6 @@ jar {
                 "MixinConfigs": "betternethermap.mixin.json"
         ])
     }
-    rename 'mixin-refmap.json', 'betternethermap.mixin-refmap.json'
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
