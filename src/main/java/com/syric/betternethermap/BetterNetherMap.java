@@ -43,7 +43,7 @@ public class BetterNetherMap
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BNMItems.register(modEventBus);
         // Register the item to a creative tab
-        modEventBus.addListener(BNMItems::addCreative);
+//        modEventBus.addListener(BNMItems::addCreative);
 
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
