@@ -2,8 +2,9 @@ package com.syric.betternethermap.items;
 
 import com.syric.betternethermap.BetterNetherMap;
 import com.syric.betternethermap.config.MapBehaviorType;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -20,11 +21,19 @@ public class BNMItems {
 
     // register items
     public static final RegistryObject<Item> FIXED_HEIGHT_MAP = ITEMS.register("fixedmap",
-            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.FIXED));
+            () -> new AlternateMapItem(new Item.Properties(), MapBehaviorType.FIXED));
     public static final RegistryObject<Item> SNAP_HEIGHT_MAP = ITEMS.register("snapmap",
-            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.SNAP));
+            () -> new AlternateMapItem(new Item.Properties(), MapBehaviorType.SNAP));
     public static final RegistryObject<Item> VARIABLE_HEIGHT_MAP = ITEMS.register("variablemap",
-            () -> new AlternateMapItem(new Item.Properties().tab(CreativeModeTab.TAB_MISC), MapBehaviorType.VARIABLE));
+            () -> new AlternateMapItem(new Item.Properties(), MapBehaviorType.VARIABLE));
 
+
+    public static void addCreative(CreativeModeTabEvent.BuildContents event) {
+        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(FIXED_HEIGHT_MAP);
+            event.accept(SNAP_HEIGHT_MAP);
+            event.accept(VARIABLE_HEIGHT_MAP);
+        }
+    }
 
 }

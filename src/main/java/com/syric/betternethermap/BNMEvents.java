@@ -5,7 +5,6 @@ import com.syric.betternethermap.config.MapBehaviorType;
 import com.syric.betternethermap.items.AlternateMapItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -23,15 +22,15 @@ public class BNMEvents {
     public static void setMapHeight(PlayerInteractEvent.RightClickItem event) {
         Level world = event.getEntity().level;
         ItemStack used = event.getItemStack();
-        if (used.getItem() instanceof EmptyMapItem && event.getEntity() instanceof Player player) {
+        if (used.getItem() instanceof EmptyMapItem) {
             event.setCanceled(true);
-//            Player player = (PlayerEntity) event.getEntity();
+            Player player = event.getEntity();
 
             if (used.getItem() instanceof AlternateMapItem alt) {
 //                AlternateMapItem alt = (AlternateMapItem) used.getItem();
                 if (!alt.enabled()) {
                     if (world.isClientSide) {
-                        player.displayClientMessage(new TranslatableComponent("betternethermap.failmessage"), false);
+                        player.displayClientMessage(Component.translatable("betternethermap.failmessage"), false);
                     }
                     event.setResult(Event.Result.DENY);
                     return;
