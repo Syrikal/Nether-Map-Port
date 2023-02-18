@@ -7,8 +7,10 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: "0.7-SNAPSHOT"    }
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: "0.7-SNAPSHOT"
+    }
 }
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 plugins {
     id 'eclipse'
     id 'maven-publish'
@@ -16,7 +18,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.0-1.19.2'
+
+version = '1.2-1.19.2'
 group = 'com.syric.betternethermap' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'betternethermap'
 
@@ -65,6 +68,7 @@ minecraft {
 
             arg "-mixin.config=betternethermap.mixin.json"
 
+
             mods {
                 examplemod {
                     source sourceSets.main
@@ -79,6 +83,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             arg "-mixin.config=betternethermap.mixin.json"
@@ -96,10 +101,19 @@ minecraft {
         gameTestServer {
             workingDirectory project.file('run')
 
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             arg "-mixin.config=betternethermap.mixin.json"
@@ -135,13 +149,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url='https://repo.spongepowered.org/repository/maven-public/' }
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
     maven {
         name = "cursemaven"
         url = "https://cursemaven.com"
@@ -167,6 +174,8 @@ dependencies {
 //    implementation fg.deobf("curse.maven:the-undergarden-379849:3810810")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
+    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
+    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     // Examples using mod jars from ./libs
