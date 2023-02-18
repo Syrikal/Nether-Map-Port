@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -51,7 +50,7 @@ public class BetterNetherMap
 
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-        forgeEventBus.addListener(this::setMapHeight);
+//        forgeEventBus.addListener(this::setMapHeight);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BNMConfig.COMMON_SPEC, "betternethermap-common.toml");
 
@@ -100,9 +99,9 @@ public class BetterNetherMap
         }
     }
 
-    private void setMapHeight(PlayerInteractEvent.RightClickItem event) {
-        BNMEvents.setMapHeight(event);
-    }
+//    private void setMapHeight(PlayerInteractEvent.RightClickItem event) {
+//        BNMEvents.setMapHeight(event);
+//    }
 
 
 }
