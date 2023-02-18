@@ -10,6 +10,7 @@ buildscript {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: "0.7-SNAPSHOT"
     }
 }
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 plugins {
     id 'eclipse'
     id 'maven-publish'
@@ -17,7 +18,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.0-1.19.3'
+version = '1.2-1.19.3'
 group = 'com.syric.betternethermap' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'betternethermap'
 
@@ -136,6 +137,13 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url='https://repo.spongepowered.org/repository/maven-public/' }
+    // Put repositories for dependencies here
+    // ForgeGradle automatically adds the Forge maven and Maven Central for you
+
+    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+    // flatDir {
+    //     dir 'libs'
+    // }
     maven {
         name = "cursemaven"
         url = "https://cursemaven.com"
@@ -158,7 +166,7 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-
+//    implementation fg.deobf("curse.maven:the-undergarden-379849:3810810")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency

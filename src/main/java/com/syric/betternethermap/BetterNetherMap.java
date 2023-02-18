@@ -3,7 +3,6 @@ package com.syric.betternethermap;
 import com.syric.betternethermap.config.BNMConfig;
 import com.syric.betternethermap.items.BNMItems;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,7 +46,7 @@ public class BetterNetherMap
 
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-        forgeEventBus.addListener(this::setMapHeight);
+//        forgeEventBus.addListener(this::setMapHeight);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BNMConfig.COMMON_SPEC, "betternethermap-common.toml");
 
@@ -79,9 +78,9 @@ public class BetterNetherMap
         LOGGER.info("HELLO from server starting");
     }
 
-    private void setMapHeight(PlayerInteractEvent.RightClickItem event) {
-        BNMEvents.setMapHeight(event);
-    }
+//    private void setMapHeight(PlayerInteractEvent.RightClickItem event) {
+//        BNMEvents.setMapHeight(event);
+//    }
 
 
 }
