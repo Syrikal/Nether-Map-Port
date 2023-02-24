@@ -48,11 +48,6 @@ public class AlternateMapItem extends EmptyMapItem {
             return InteractionResultHolder.success(blankMapStack);
         }
 
-        //Remove blank map.
-        if (!player.getAbilities().instabuild) {
-            blankMapStack.shrink(1);
-        }
-
         //Create and tag the new map.
         ItemStack filledMapStack = MapItem.create(world, player.getBlockX(), player.getBlockZ(), (byte)0, true, false);
         CompoundTag tag = filledMapStack.getOrCreateTag();
@@ -62,6 +57,10 @@ public class AlternateMapItem extends EmptyMapItem {
         }
         filledMapStack.setTag(tag);
 
+        //Remove blank map.
+        if (!player.getAbilities().instabuild) {
+            blankMapStack.shrink(1);
+        }
 
         //Add new map
         player.awardStat(Stats.ITEM_USED.get(this));
