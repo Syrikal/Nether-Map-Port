@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+          "item": "minecraft:map"
+        },
+        {
+          "item": "minecraft:redstone"
+        }
+    ],
+    "result": {
+        "item": "betternethermap:snapmap",
+        "count": 1
+    }
+}

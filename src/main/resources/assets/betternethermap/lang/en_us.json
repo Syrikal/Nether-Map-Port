@@ -1,0 +1,6 @@
+{
+  "betternethermap.failmessage": "This map type must be enabled in config.",
+  "item.betternethermap.fixedmap": "Fixed-Height Map",
+  "item.betternethermap.snapmap": "Snap-Height Map",
+  "item.betternethermap.variablemap": "Variable-Height Map"
+}
