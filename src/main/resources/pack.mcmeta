@@ -1,8 +1,6 @@
 {
     "pack": {
-        "description": "Better Nether Map resources",
-        "pack_format": 12,
-        "forge:resource_pack_format": 12,
-        "forge:data_pack_format": 10
+        "description": "Oh the Trees You'll Grow resources",
+        "pack_format": 6
     }
 }
