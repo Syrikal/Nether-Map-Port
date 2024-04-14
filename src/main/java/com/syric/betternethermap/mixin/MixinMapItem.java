@@ -19,10 +19,11 @@ import java.util.Objects;
 @Mixin(MapItem.class)
 public class MixinMapItem {
 
+
     @Redirect(method = "update", at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/level/dimension/DimensionType;hasCeiling()Z"))
-    /**
+    /*
      * Make every dimension have a sky, which makes maps show the surface.
      *
      * @see FilledMapItem#update(World world, Entity entity, MapData data)
@@ -34,7 +35,7 @@ public class MixinMapItem {
     @Redirect(method = "update", at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/level/chunk/LevelChunk;getHeight(Lnet/minecraft/world/level/levelgen/Heightmap$Types;II)I"))
-    /**
+    /*
      * Change the height at which the map starts to scan for blocks.
      * If the dimension type has no ceiling, returns the surface.
      * Otherwise, checks the player's inventory for the map item and reads its stored yLevel.
@@ -49,7 +50,7 @@ public class MixinMapItem {
                 for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
                     ItemStack item = player.getInventory().getItem(slot);
                     //If the map is found, return its yLevel value!
-                    if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level), data)) {
+                    if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level()), data)) {
                         //This might damage preexisting maps! Probably only of the nether though.
 //                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
                         foundLevel = item.getOrCreateTag().getInt("yLevel");
@@ -58,7 +59,7 @@ public class MixinMapItem {
                 }
                 //Also check the offhand!
                 ItemStack offhandItem = player.getOffhandItem();
-                if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level), data)) {
+                if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level()), data)) {
                     //This might damage preexisting maps! Probably only of the nether though.
 //                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
                     foundLevel = offhandItem.getOrCreateTag().getInt("yLevel");
@@ -72,7 +73,7 @@ public class MixinMapItem {
                 for (int slot = 0; slot < player.getInventory().items.size(); slot++) {
                     ItemStack item = player.getInventory().getItem(slot);
                     //If the map is found, return its yLevel value!
-                    if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level), data)) {
+                    if (item.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(item, entity.level()), data)) {
                         //This might damage preexisting maps! Probably only of the nether though.
 //                    BetterNetherMap.LOGGER.info("Scanning at y-level " + item.getOrCreateTag().getInt("yLevel"));
                         foundLevel = item.getOrCreateTag().getInt("yLevel");
@@ -81,7 +82,7 @@ public class MixinMapItem {
                 }
                 //Also check the offhand!
                 ItemStack offhandItem = player.getOffhandItem();
-                if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level), data)) {
+                if (offhandItem.getItem() instanceof MapItem && Objects.equals(MapItem.getSavedData(offhandItem, entity.level()), data)) {
                     //This might damage preexisting maps! Probably only of the nether though.
 //                BetterNetherMap.LOGGER.info("Scanning at y-level " + offhandItem.getOrCreateTag().getInt("yLevel"));
                     foundLevel = offhandItem.getOrCreateTag().getInt("yLevel");

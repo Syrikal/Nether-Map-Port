@@ -2,9 +2,8 @@ package com.syric.betternethermap.items;
 
 import com.syric.betternethermap.BetterNetherMap;
 import com.syric.betternethermap.config.MapBehaviorType;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraft.world.item.*;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,12 +26,11 @@ public class BNMItems {
     public static final RegistryObject<Item> VARIABLE_HEIGHT_MAP = ITEMS.register("variablemap",
             () -> new AlternateMapItem(new Item.Properties(), MapBehaviorType.VARIABLE));
 
-
-    public static void addCreative(CreativeModeTabEvent.BuildContents event) {
-        if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(FIXED_HEIGHT_MAP);
-            event.accept(SNAP_HEIGHT_MAP);
-            event.accept(VARIABLE_HEIGHT_MAP);
+    public static void buildCreativeModeTabs(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)) {
+            event.getEntries().putAfter(Items.MAP.getDefaultInstance(), new ItemStack(VARIABLE_HEIGHT_MAP.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.getEntries().putAfter(Items.MAP.getDefaultInstance(), new ItemStack(SNAP_HEIGHT_MAP.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            event.getEntries().putAfter(Items.MAP.getDefaultInstance(), new ItemStack(FIXED_HEIGHT_MAP.get()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
     }
 

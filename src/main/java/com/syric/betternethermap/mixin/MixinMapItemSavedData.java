@@ -40,7 +40,7 @@ public class MixinMapItemSavedData {
     @Inject(method= "tickCarriedBy", at = @At(value = "TAIL"))
     //Removes player location icon when in a different dimension.
     public void removeOtherDimensions(Player player, ItemStack stack, CallbackInfo ci) {
-        if (player.level.dimension() != this.dimension) {
+        if (player.level().dimension() != this.dimension) {
             this.decorations.remove(player.getName().getString());
         }
     }

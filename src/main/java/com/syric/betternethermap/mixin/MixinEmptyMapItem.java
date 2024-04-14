@@ -16,8 +16,8 @@ import static com.syric.betternethermap.getMapHeight.getVanillaMapHeight;
 @Mixin(EmptyMapItem.class)
 public class MixinEmptyMapItem {
 
-    @ModifyVariable(method = "use", at = @At("STORE"), ordinal = 1)
-    private ItemStack filledMap(ItemStack filledMapStack, Level world, Player player) {
+    @ModifyVariable(method = "use", at = @At(value = "STORE"), ordinal = 0)
+    public ItemStack filledMap(ItemStack filledMapStack, Level world, Player player) {
 
         //Add the NBT
         CompoundTag tag = filledMapStack.getOrCreateTag();

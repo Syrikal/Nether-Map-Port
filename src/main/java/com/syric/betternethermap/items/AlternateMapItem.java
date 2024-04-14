@@ -13,6 +13,7 @@ import net.minecraft.world.item.EmptyMapItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import static com.syric.betternethermap.getMapHeight.getAltMapHeight;
 
@@ -27,7 +28,7 @@ public class AlternateMapItem extends EmptyMapItem {
 
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
 //        BetterNetherMap.LOGGER.info("Detected an alternate map");
         ItemStack blankMapStack = player.getItemInHand(hand);
 
@@ -63,7 +64,7 @@ public class AlternateMapItem extends EmptyMapItem {
 
         //Add new map
         player.awardStat(Stats.ITEM_USED.get(this));
-        player.level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
+        player.level().playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
         if (blankMapStack.isEmpty()) {
             return InteractionResultHolder.consume(filledMapStack);
         } else {
