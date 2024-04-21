@@ -9,24 +9,28 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import static com.syric.betternethermap.getMapHeight.getVanillaMapHeight;
 
 @Mixin(EmptyMapItem.class)
 public class MixinEmptyMapItem {
 
-    @ModifyVariable(method = "use", at = @At(value = "STORE"), ordinal = 0)
-    public ItemStack filledMap(ItemStack filledMapStack, Level world, Player player) {
-
+    @Redirect(method = "use", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"))
+    public ItemStack copy(ItemStack instance, Level world, Player player) {
+        ItemStack output = instance.copy();
         //Add the NBT
-        CompoundTag tag = filledMapStack.getOrCreateTag();
+        CompoundTag tag = output.getOrCreateTag();
         tag.putInt("yLevel", getVanillaMapHeight(player, world));
-        if (BNMConfig.debugMessages.get()) {
+        if (BNMConfig.debugMessages.get() && world.isClientSide) {
             player.displayClientMessage(Component.nullToEmpty("Set map y-level to " + getVanillaMapHeight(player, world)), false);
+            player.displayClientMessage(Component.nullToEmpty("Tag: " + tag), false);
         }
-        filledMapStack.setTag(tag);
-        return filledMapStack;
+        output.setTag(tag);
+        return output;
     }
+
 
 }
